@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+*{
+  --my-green: #3D8C5D;
+  --my-black: #2B3035;
+  --my-white: #FFFFFF;
+}
