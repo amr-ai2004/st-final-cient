@@ -96,7 +96,7 @@ export default function SignUp() {
           </div>
         </div>
         <button className="btn btn-success w-100">Register</button>
-        <center><a onClick={()=>navigate('/')} style={{color:'white', textDecoration:"underline"}}>Or you can Login here</a></center>
+        <center><span onClick={()=>navigate('/')} style={{color:'white', textDecoration:"underline"}}>Or you can Login here</span></center>
       </form>
     </div>
   );
