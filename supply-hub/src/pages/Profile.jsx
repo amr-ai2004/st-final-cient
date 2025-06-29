@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function Profile({ user }) {
+export default function Profile({ user, setUser}) {
   const [formData, setFormData] = useState({
     username: '',
     lei: '',
@@ -13,17 +13,64 @@ export default function Profile({ user }) {
     password: ''
   });
 
+
+  const mount=async()=>{
+    try {
+      const credentials = {username:user.username, password:user.password};
+      // console.log("Here: ",user);
+      console.log("Cred: ",credentials);
+      const BASE_URL = process.env.REACT_APP_SERVER_URL;
+      const res = await axios.post(`${BASE_URL}/api/auth/profile`, credentials);
+      console.log("Res: ",res);
+      
+      
+      localStorage.setItem('user', JSON.stringify({...res.data, password: user.password/*, ...formData*/}));
+      setUser(prev => ({...res.data, password: user.password/*, ...formData*/}));
+      console.log("setUser",{...res.data, password: user.password/*, ...formData*/})
+      
+      setFormData({
+        username: user.username,
+        lei: user.lei,
+        email: user.email,
+        phone: user.phone,
+        city: user.city,
+        address1: user.address1,
+        address2: user.address2,
+        password: user.password
+      });
+    } catch (err) {
+      alert(err.response?.data?.error || 'Login failed');
+    }
+  }
+
+  
   useEffect(() => {
     if (user) {
       setFormData({
-        username: user.username || '',
-        lei: user.lei || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        city: user.city || '',
-        address1: user.address1 || '',
-        address2: user.address2 || '',
-        password: user.password || ''
+        username: user.username,
+        lei: user.lei,
+        email: user.email,
+        phone: user.phone,
+        city: user.city,
+        address1: user.address1,
+        address2: user.address2,
+        password: user.password
+      });
+    }
+    mount();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        username: user.username,
+        lei: user.lei,
+        email: user.email,
+        phone: user.phone,
+        city: user.city,
+        address1: user.address1,
+        address2: user.address2,
+        password: user.password
       });
     }
   }, [user]);
@@ -39,10 +86,11 @@ export default function Profile({ user }) {
     e.preventDefault();
     try {
       const BASE_URL = process.env.REACT_APP_SERVER_URL;
-      const res = await axios.put(`${BASE_URL}/api/profile`, formData);
+      const res = await axios.put(`${BASE_URL}/api/auth/profile`, formData);
       console.log(res);
       
       alert("Profile updated successfully");
+      mount();
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Failed to update profile");
